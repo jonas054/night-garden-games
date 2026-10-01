@@ -1,168 +1,91 @@
 import { useState } from 'react'
-import {
-  CATCH_TARGETS,
-  catchFirefly,
-  resetGame,
-  startGame,
-  type GameState,
-} from './gameState'
+import { GAME_CATALOG } from './gameCatalog'
+import type { GameCatalogEntry } from './gameTypes'
 import './App.css'
+import './Menu.css'
 
 function App() {
-  const [game, setGame] = useState<GameState>(resetGame)
-  const currentTarget =
-    game.phase === 'playing' ? CATCH_TARGETS[game.caughtCount] : undefined
-  const announcement =
-    game.phase === 'complete'
-      ? 'You caught all five fireflies. The grove is glowing.'
-      : game.caughtCount > 0
-        ? `You caught ${game.caughtCount} of ${CATCH_TARGETS.length} fireflies.`
-        : ''
+  const [activeGame, setActiveGame] = useState<GameCatalogEntry | null>(null)
+
+  if (activeGame) {
+    const Game = activeGame.component
+    return <Game onBackToMenu={() => setActiveGame(null)} />
+  }
+
+  const gameCountLabel = `${GAME_CATALOG.length} ${
+    GAME_CATALOG.length === 1 ? 'game' : 'games'
+  } ready`
 
   return (
     <div className="app-shell">
       <header className="topline">
         <div className="wordmark">
           <span className="wordmark__spark" aria-hidden="true" />
-          <span className="wordmark__name">Glow Grove</span>
+          <span className="wordmark__name">Night Garden</span>
         </div>
-        <p className="topline__tag">An evening in the garden</p>
+        <p className="topline__tag">{gameCountLabel}</p>
       </header>
 
-      <main className="game-page" aria-labelledby="game-title">
-        <header className="intro">
-          <p className="intro__eyebrow">
-            <span className="intro__asterisk" aria-hidden="true" />
-            A tiny moonlit game
+      <main className="menu-page" aria-labelledby="menu-title">
+        <section className="menu-intro">
+          <p className="menu-intro__eyebrow">
+            <span className="menu-intro__spark" aria-hidden="true" />
+            Small games, softer evenings
           </p>
-          <h1 id="game-title">
-            Glow <span>Grove</span>
+          <h1 id="menu-title">
+            Choose a <span>game</span>
           </h1>
-          <p className="intro__copy">
-            Follow each flicker and bring five fireflies home.
+          <p className="menu-intro__copy">
+            Pick a little world to step into. More can join the shelf anytime.
           </p>
-        </header>
+        </section>
 
-        <div className="game-layout">
-          <aside className="score-card" aria-label="Round score">
-            <div className="score-card__top">
-              <p className="score-card__kicker">Tonight&apos;s field log</p>
-              <span className="score-card__moon" aria-hidden="true" />
-            </div>
-            <p className="score-card__label">Fireflies caught</p>
-            <p className="score-value">
-              <strong>{game.caughtCount}</strong>
-              <span> / {CATCH_TARGETS.length} caught</span>
-            </p>
-            <div
-              className="progress-track"
-              role="img"
-              aria-label={`${game.caughtCount} of ${CATCH_TARGETS.length} fireflies caught`}
-            >
-              {CATCH_TARGETS.map((target, index) => (
-                <span
-                  className={`progress-track__dot${index < game.caughtCount ? ' is-caught' : ''}`}
-                  key={target.id}
-                />
-              ))}
-            </div>
-            <p className="score-card__tip">
-              {game.phase === 'complete'
-                ? 'A little more light in the world.'
-                : game.phase === 'playing'
-                  ? 'No rush. The grove will wait.'
-                  : 'Every glow has its own little place.'}
-            </p>
-          </aside>
+        <section className="game-library" aria-labelledby="game-library-title">
+          <div className="game-library__heading">
+            <h2 id="game-library-title">Available games</h2>
+            <span>{GAME_CATALOG.length} ready to play</span>
+          </div>
+          <div className="game-grid">
+            {GAME_CATALOG.map((game, index) => (
+              <article className="game-card" key={game.id}>
+                <div className="game-card__art" aria-hidden="true">
+                  <span className="game-card__moon" />
+                  <span className="game-card__star game-card__star--one" />
+                  <span className="game-card__star game-card__star--two" />
+                  <span className="game-card__star game-card__star--three" />
+                  <span className="game-card__ridge game-card__ridge--back" />
+                  <span className="game-card__ridge game-card__ridge--front" />
+                  <span className="game-card__firefly" />
+                  <span className="game-card__art-label">{game.category}</span>
+                </div>
 
-          <section
-            className={`meadow meadow--${game.phase}`}
-            aria-label="Moonlit meadow"
-          >
-            <div className="meadow__scenery" aria-hidden="true">
-              <span className="meadow__moon" />
-              <span className="meadow__star meadow__star--one" />
-              <span className="meadow__star meadow__star--two" />
-              <span className="meadow__star meadow__star--three" />
-              <span className="meadow__star meadow__star--four" />
-              <span className="meadow__star meadow__star--five" />
-              <span className="meadow__glow" />
-              <span className="meadow__ridge meadow__ridge--far" />
-              <span className="meadow__ridge meadow__ridge--middle" />
-              <span className="meadow__ridge meadow__ridge--near" />
-            </div>
-
-            <p className="meadow__caption">
-              <span className="meadow__caption-dot" aria-hidden="true" />
-              The grove after dusk
-            </p>
-
-            {game.phase === 'ready' && (
-              <div className="state-card">
-                <p className="state-card__eyebrow">Take a quiet breath</p>
-                <h2>Find the first light</h2>
-                <p>
-                  Catch all five fireflies and let the whole meadow glow.
-                </p>
-                <button
-                  className="primary-action"
-                  onClick={() => setGame(startGame())}
-                  type="button"
-                >
-                  Start catching
-                </button>
-              </div>
-            )}
-
-            {game.phase === 'playing' && currentTarget && (
-              <>
-                <p className="meadow__hint">
-                  A little {currentTarget.color} glow is resting near the{' '}
-                  {currentTarget.landmark}.
-                </p>
-                <button
-                  aria-label={`Catch the ${currentTarget.color} firefly`}
-                  className={`firefly firefly--${currentTarget.position} firefly--${currentTarget.tone}`}
-                  onClick={() => setGame((state) => catchFirefly(state))}
-                  type="button"
-                >
-                  <span className="firefly__body" aria-hidden="true" />
-                </button>
-              </>
-            )}
-
-            {game.phase === 'complete' && (
-              <div className="state-card state-card--complete">
-                <p className="state-card__eyebrow">All five, found</p>
-                <h2>The grove is glowing</h2>
-                <p>
-                  You caught every firefly. The whole meadow feels a little
-                  brighter.
-                </p>
-                <button
-                  className="primary-action"
-                  onClick={() => setGame(resetGame())}
-                  type="button"
-                >
-                  Play again
-                </button>
-              </div>
-            )}
-          </section>
-        </div>
-
-        <p className="visually-hidden" role="status" aria-live="polite" aria-atomic="true">
-          {announcement}
-        </p>
+                <div className="game-card__content">
+                  <p className="game-card__eyebrow">
+                    {String(index + 1).padStart(2, '0')} / {game.category}
+                  </p>
+                  <h3 className="game-card__title">{game.title}</h3>
+                  <p className="game-card__tagline">{game.tagline}</p>
+                  <p className="game-card__description">{game.description}</p>
+                  <div className="game-card__footer">
+                    <p className="game-card__details">{game.details}</p>
+                    <button
+                      className="primary-action"
+                      onClick={() => setActiveGame(game)}
+                      type="button"
+                    >
+                      Play {game.title}
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
       </main>
 
-      <footer className="game-footer">
-        <p className="game-footer__note">A small game for a slower evening.</p>
-        <p className="game-footer__keys">
-          <kbd>Tab</kbd> to focus
-          <span aria-hidden="true">·</span>
-          <kbd>Enter</kbd> or <kbd>Space</kbd> to catch
-        </p>
+      <footer className="menu-footer">
+        <p>A small shelf of local games.</p>
+        <p>No accounts, no rush, just play.</p>
       </footer>
     </div>
   )

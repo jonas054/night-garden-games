@@ -61,6 +61,37 @@
   color: var(--color-muted);
 }
 
+.topline__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-muted);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 180ms ease;
+}
+
+.topline__back:hover {
+  color: var(--color-paper);
+}
+
+.topline__back-arrow {
+  color: var(--color-mint);
+  font-size: 1rem;
+  line-height: 1;
+  transition: transform 180ms ease;
+}
+
+.topline__back:hover .topline__back-arrow {
+  transform: translateX(-3px);
+}
+
 .game-page {
   display: flex;
   flex: 1;

@@ -3,15 +3,26 @@ import { expect, test, type Page } from '@playwright/test'
 const catchButton = (page: Page) =>
   page.getByRole('button', { name: /^Catch the .+ firefly$/ })
 
-test('catches all five fireflies and resets for another round', async ({
+async function selectGlowGrove(page: Page) {
+  await page.getByRole('button', { name: 'Play Glow Grove' }).click()
+  await expect(
+    page.getByRole('heading', { name: 'Glow Grove', exact: true }),
+  ).toBeVisible()
+}
+
+test('opens Glow Grove from the menu, completes a round, and returns', async ({
   page,
 }) => {
   await page.goto('/')
 
   await expect(
-    page.getByRole('heading', { name: 'Glow Grove', exact: true }),
+    page.getByRole('heading', { name: 'Choose a game' }),
+  ).toBeVisible()
+  await expect(
+    page.getByRole('button', { name: 'Play Glow Grove' }),
   ).toBeVisible()
 
+  await selectGlowGrove(page)
   await page.getByRole('button', { name: 'Start catching' }).click()
 
   for (let caught = 1; caught <= 5; caught += 1) {
@@ -33,12 +44,21 @@ test('catches all five fireflies and resets for another round', async ({
     page.getByRole('button', { name: 'Start catching' }),
   ).toBeVisible()
   await expect(page.getByText('0 / 5 caught', { exact: true })).toBeVisible()
+
+  await page.getByRole('button', { name: 'Back to game menu' }).click()
+  await expect(
+    page.getByRole('heading', { name: 'Choose a game' }),
+  ).toBeVisible()
 })
 
-test('supports starting, catching, and replaying with the keyboard', async ({
+test('supports menu selection, catching, and replay with the keyboard', async ({
   page,
 }) => {
   await page.goto('/')
+
+  const selectButton = page.getByRole('button', { name: 'Play Glow Grove' })
+  await selectButton.focus()
+  await page.keyboard.press('Enter')
 
   const startButton = page.getByRole('button', { name: 'Start catching' })
   await startButton.focus()
@@ -59,9 +79,18 @@ test('supports starting, catching, and replaying with the keyboard', async ({
 
   await expect(startButton).toBeVisible()
   await expect(page.getByText('0 / 5 caught', { exact: true })).toBeVisible()
+
+  const backButton = page.getByRole('button', { name: 'Back to game menu' })
+  await backButton.focus()
+  await page.keyboard.press('Enter')
+  await expect(
+    page.getByRole('heading', { name: 'Choose a game' }),
+  ).toBeVisible()
 })
 
-test('fits a narrow viewport and supports touch input', async ({ browser }) => {
+test('fits a narrow menu and game and supports touch input', async ({
+  browser,
+}) => {
   const context = await browser.newContext({
     baseURL: 'http://127.0.0.1:4173',
     hasTouch: true,
@@ -77,6 +106,13 @@ test('fits a narrow viewport and supports touch input', async ({ browser }) => {
       document: document.documentElement.scrollWidth,
     }))
     expect(widths.document).toBeLessThanOrEqual(widths.viewport)
+
+    await page.getByRole('button', { name: 'Play Glow Grove' }).tap()
+    const gameWidths = await page.evaluate(() => ({
+      viewport: window.innerWidth,
+      document: document.documentElement.scrollWidth,
+    }))
+    expect(gameWidths.document).toBeLessThanOrEqual(gameWidths.viewport)
 
     await page.getByRole('button', { name: 'Start catching' }).tap()
 
