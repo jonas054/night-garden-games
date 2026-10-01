@@ -1,0 +1,67 @@
+:root {
+  --color-night: #081a1b;
+  --color-night-soft: #102526;
+  --color-paper: #f3eedf;
+  --color-muted: #a5b8a8;
+  --color-mint: #b5edce;
+  --color-gold: #f5d58b;
+  --color-line: rgba(202, 224, 199, 0.14);
+  --font-body: 'Avenir Next', 'Segoe UI', sans-serif;
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+
+  color: var(--color-paper);
+  background: var(--color-night);
+  color-scheme: dark;
+  font-family: var(--font-body);
+  font-synthesis: none;
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+  background: var(--color-night);
+}
+
+body {
+  min-width: 320px;
+  min-height: 100svh;
+  margin: 0;
+  background:
+    radial-gradient(
+      ellipse at 17% 5%,
+      rgba(59, 99, 77, 0.17),
+      transparent 34%
+    ),
+    radial-gradient(
+      ellipse at 91% 43%,
+      rgba(32, 72, 64, 0.16),
+      transparent 39%
+    ),
+    linear-gradient(145deg, #081a1b 2%, #0b2021 54%, #081719 100%);
+}
+
+button {
+  font: inherit;
+}
+
+button:focus-visible {
+  outline: 3px solid var(--color-gold);
+  outline-offset: 4px;
+}
+
+::selection {
+  color: var(--color-night);
+  background: var(--color-mint);
+}
+
+#root {
+  min-height: 100svh;
+}
