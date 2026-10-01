@@ -48,14 +48,36 @@ function App() {
           <div className="game-grid">
             {GAME_CATALOG.map((game, index) => (
               <article className="game-card" key={game.id}>
-                <div className="game-card__art" aria-hidden="true">
-                  <span className="game-card__moon" />
-                  <span className="game-card__star game-card__star--one" />
-                  <span className="game-card__star game-card__star--two" />
-                  <span className="game-card__star game-card__star--three" />
-                  <span className="game-card__ridge game-card__ridge--back" />
-                  <span className="game-card__ridge game-card__ridge--front" />
-                  <span className="game-card__firefly" />
+                <div
+                  className={`game-card__art game-card__art--${game.artwork}`}
+                  aria-hidden="true"
+                >
+                  {game.artwork === 'meadow' ? (
+                    <>
+                      <span className="game-card__moon" />
+                      <span className="game-card__star game-card__star--one" />
+                      <span className="game-card__star game-card__star--two" />
+                      <span className="game-card__star game-card__star--three" />
+                      <span className="game-card__ridge game-card__ridge--back" />
+                      <span className="game-card__ridge game-card__ridge--front" />
+                      <span className="game-card__firefly" />
+                    </>
+                  ) : (
+                    <>
+                      <span className="game-card__breakout-glow" />
+                      <div className="game-card__breakout-bricks">
+                        {Array.from({ length: 40 }, (_, brickIndex) => (
+                          <span
+                            className="game-card__breakout-brick"
+                            data-row={Math.floor(brickIndex / 8)}
+                            key={brickIndex}
+                          />
+                        ))}
+                      </div>
+                      <span className="game-card__breakout-ball" />
+                      <span className="game-card__breakout-paddle" />
+                    </>
+                  )}
                   <span className="game-card__art-label">{game.category}</span>
                 </div>
 

@@ -1,8 +1,8 @@
 # Night Garden
 
-A small, local-only collection of cozy games. The home menu currently features
-Glow Grove, a deterministic game about catching five fireflies in a moonlit
-meadow.
+A small, local-only collection of cozy games. Choose between **Glow Grove**, a
+firefly-catching game in a moonlit meadow, and **Moonlit Breakout**, a paddle
+game with five rows of glowing bricks.
 
 ## Run locally
 
@@ -36,9 +36,12 @@ active round.
 ## Add a game
 
 Create a game component that accepts `GameComponentProps` from
-`src/gameTypes.ts`, then add its title, menu details, and component to
-`GAME_CATALOG` in `src/gameCatalog.ts`. The menu is rendered from that catalog.
-Each game should provide a button that returns to the menu.
+`src/gameTypes.ts`, then add its title, menu details, artwork variant, and
+component to `GAME_CATALOG` in `src/gameCatalog.ts`. Add a matching artwork
+preview in `src/App.tsx` when introducing a new variant. The menu is rendered
+from that catalog. Each game should provide a button that returns to the menu.
 
 Use Tab to focus controls and Enter or Space to activate them. Glow Grove's
 firefly targets are real buttons, and score changes are announced politely.
+In Moonlit Breakout, focus the playfield and use the arrow keys or A / D to
+steer the paddle. Pointer and touch steering are supported; Space or P pauses.

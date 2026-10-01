@@ -239,6 +239,85 @@
   text-transform: uppercase;
 }
 
+.game-card__breakout-glow {
+  position: absolute;
+  top: 31%;
+  left: 13%;
+  width: 74%;
+  height: 48%;
+  background: radial-gradient(
+    ellipse,
+    rgba(124, 188, 147, 0.17),
+    transparent 70%
+  );
+  filter: blur(7px);
+}
+
+.game-card__breakout-bricks {
+  position: absolute;
+  z-index: 1;
+  top: 33%;
+  right: 13%;
+  left: 13%;
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.game-card__breakout-brick {
+  height: 8px;
+  border-radius: 4px;
+  background: #f5d58b;
+  box-shadow: 0 0 8px rgba(245, 213, 139, 0.3);
+}
+
+.game-card__breakout-brick[data-row='1'] {
+  background: #d9e49e;
+  box-shadow: 0 0 8px rgba(217, 228, 158, 0.25);
+}
+
+.game-card__breakout-brick[data-row='2'] {
+  background: #b5edce;
+  box-shadow: 0 0 8px rgba(181, 237, 206, 0.25);
+}
+
+.game-card__breakout-brick[data-row='3'] {
+  background: #8ccdb0;
+  box-shadow: 0 0 8px rgba(140, 205, 176, 0.25);
+}
+
+.game-card__breakout-brick[data-row='4'] {
+  background: #79b5a0;
+  box-shadow: 0 0 8px rgba(121, 181, 160, 0.25);
+}
+
+.game-card__breakout-ball {
+  position: absolute;
+  z-index: 2;
+  top: 67%;
+  left: 47%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff4d2;
+  box-shadow:
+    0 0 8px 3px rgba(245, 213, 139, 0.6),
+    0 0 20px 8px rgba(245, 213, 139, 0.25);
+}
+
+.game-card__breakout-paddle {
+  position: absolute;
+  z-index: 2;
+  bottom: 19%;
+  left: 50%;
+  width: 27%;
+  height: 7px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: #f5d58b;
+  box-shadow: 0 0 13px rgba(245, 213, 139, 0.44);
+}
+
 .game-card__content {
   display: flex;
   min-width: 0;
@@ -284,6 +363,7 @@
 .game-card__footer {
   display: flex;
   width: 100%;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
@@ -370,10 +450,6 @@
 
   .game-card__description {
     margin-bottom: 15px;
-  }
-
-  .game-card__footer {
-    flex-wrap: wrap;
   }
 
   .menu-footer {
