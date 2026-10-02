@@ -7,18 +7,47 @@ import {
   type GameState,
 } from './gameState'
 import type { GameComponentProps } from './gameTypes'
+import LanguageSwitcher from './LanguageSwitcher'
+import type { TranslationKey } from './i18n'
+import { useLanguage } from './useLanguage'
 import './App.css'
 
+const landmarkMessageKeys = {
+  willow: 'glow.landmark.willow',
+  fern: 'glow.landmark.fern',
+  pond: 'glow.landmark.pond',
+  clover: 'glow.landmark.clover',
+  hill: 'glow.landmark.hill',
+} satisfies Record<(typeof CATCH_TARGETS)[number]['id'], TranslationKey>
+
 function GlowGroveGame({ onBackToMenu }: GameComponentProps) {
+  const { t } = useLanguage()
   const [game, setGame] = useState<GameState>(resetGame)
   const currentTarget =
     game.phase === 'playing' ? CATCH_TARGETS[game.caughtCount] : undefined
   const announcement =
     game.phase === 'complete'
-      ? 'You caught all five fireflies. The grove is glowing.'
+      ? t('glow.announcement.complete')
       : game.caughtCount > 0
-        ? `You caught ${game.caughtCount} of ${CATCH_TARGETS.length} fireflies.`
+        ? t('glow.announcement.progress', {
+            caught: game.caughtCount,
+            total: CATCH_TARGETS.length,
+          })
         : ''
+  const hintColorKey =
+    currentTarget?.color === 'amber'
+      ? 'glow.color.amber'
+      : 'glow.color.mint'
+  const catchButtonKey =
+    currentTarget?.color === 'amber'
+      ? 'glow.catch.amber'
+      : 'glow.catch.mint'
+  const hint =
+    currentTarget &&
+    t('glow.hint', {
+      color: t(hintColorKey),
+      landmark: t(landmarkMessageKeys[currentTarget.id]),
+    })
 
   return (
     <div className="app-shell">
@@ -27,48 +56,56 @@ function GlowGroveGame({ onBackToMenu }: GameComponentProps) {
           <span className="wordmark__spark" aria-hidden="true" />
           <span className="wordmark__name">Glow Grove</span>
         </div>
-        <button
-          aria-label="Back to game menu"
-          className="topline__back"
-          onClick={onBackToMenu}
-          type="button"
-        >
-          <span className="topline__back-arrow" aria-hidden="true">
-            ←
-          </span>
-          All games
-        </button>
+        <div className="topline__actions">
+          <LanguageSwitcher />
+          <button
+            aria-label={t('glow.back')}
+            className="topline__back"
+            onClick={onBackToMenu}
+            type="button"
+          >
+            <span className="topline__back-arrow" aria-hidden="true">
+              ←
+            </span>
+            {t('glow.back')}
+          </button>
+        </div>
       </header>
 
       <main className="game-page" aria-labelledby="game-title">
         <header className="intro">
           <p className="intro__eyebrow">
             <span className="intro__asterisk" aria-hidden="true" />
-            A tiny moonlit game
+            {t('glow.eyebrow')}
           </p>
           <h1 id="game-title">
             Glow <span>Grove</span>
           </h1>
-          <p className="intro__copy">
-            Follow each flicker and bring five fireflies home.
-          </p>
+          <p className="intro__copy">{t('glow.intro')}</p>
         </header>
 
         <div className="game-layout">
-          <aside className="score-card" aria-label="Round score">
+          <aside className="score-card" aria-label={t('glow.score.aria')}>
             <div className="score-card__top">
-              <p className="score-card__kicker">Tonight&apos;s field log</p>
+              <p className="score-card__kicker">
+                {t('glow.score.kicker')}
+              </p>
               <span className="score-card__moon" aria-hidden="true" />
             </div>
-            <p className="score-card__label">Fireflies caught</p>
+            <p className="score-card__label">{t('glow.score.label')}</p>
             <p className="score-value">
               <strong>{game.caughtCount}</strong>
-              <span> / {CATCH_TARGETS.length} caught</span>
+              <span>
+                {t('glow.score.suffix', { total: CATCH_TARGETS.length })}
+              </span>
             </p>
             <div
               className="progress-track"
               role="img"
-              aria-label={`${game.caughtCount} of ${CATCH_TARGETS.length} fireflies caught`}
+              aria-label={t('glow.score.progress', {
+                caught: game.caughtCount,
+                total: CATCH_TARGETS.length,
+              })}
             >
               {CATCH_TARGETS.map((target, index) => (
                 <span
@@ -79,16 +116,16 @@ function GlowGroveGame({ onBackToMenu }: GameComponentProps) {
             </div>
             <p className="score-card__tip">
               {game.phase === 'complete'
-                ? 'A little more light in the world.'
+                ? t('glow.score.tip.complete')
                 : game.phase === 'playing'
-                  ? 'No rush. The grove will wait.'
-                  : 'Every glow has its own little place.'}
+                  ? t('glow.score.tip.playing')
+                  : t('glow.score.tip.ready')}
             </p>
           </aside>
 
           <section
             className={`meadow meadow--${game.phase}`}
-            aria-label="Moonlit meadow"
+            aria-label={t('glow.scene.aria')}
           >
             <div className="meadow__scenery" aria-hidden="true">
               <span className="meadow__moon" />
@@ -105,34 +142,31 @@ function GlowGroveGame({ onBackToMenu }: GameComponentProps) {
 
             <p className="meadow__caption">
               <span className="meadow__caption-dot" aria-hidden="true" />
-              The grove after dusk
+              {t('glow.scene.caption')}
             </p>
 
             {game.phase === 'ready' && (
               <div className="state-card">
-                <p className="state-card__eyebrow">Take a quiet breath</p>
-                <h2>Find the first light</h2>
-                <p>
-                  Catch all five fireflies and let the whole meadow glow.
+                <p className="state-card__eyebrow">
+                  {t('glow.ready.kicker')}
                 </p>
+                <h2>{t('glow.ready.title')}</h2>
+                <p>{t('glow.ready.body')}</p>
                 <button
                   className="primary-action"
                   onClick={() => setGame(startGame())}
                   type="button"
                 >
-                  Start catching
+                  {t('glow.ready.button')}
                 </button>
               </div>
             )}
 
             {game.phase === 'playing' && currentTarget && (
               <>
-                <p className="meadow__hint">
-                  A little {currentTarget.color} glow is resting near the{' '}
-                  {currentTarget.landmark}.
-                </p>
+                <p className="meadow__hint">{hint}</p>
                 <button
-                  aria-label={`Catch the ${currentTarget.color} firefly`}
+                  aria-label={t(catchButtonKey)}
                   className={`firefly firefly--${currentTarget.position} firefly--${currentTarget.tone}`}
                   onClick={() => setGame((state) => catchFirefly(state))}
                   type="button"
@@ -144,18 +178,17 @@ function GlowGroveGame({ onBackToMenu }: GameComponentProps) {
 
             {game.phase === 'complete' && (
               <div className="state-card state-card--complete">
-                <p className="state-card__eyebrow">All five, found</p>
-                <h2>The grove is glowing</h2>
-                <p>
-                  You caught every firefly. The whole meadow feels a little
-                  brighter.
+                <p className="state-card__eyebrow">
+                  {t('glow.complete.kicker')}
                 </p>
+                <h2>{t('glow.complete.title')}</h2>
+                <p>{t('glow.complete.body')}</p>
                 <button
                   className="primary-action"
                   onClick={() => setGame(resetGame())}
                   type="button"
                 >
-                  Play again
+                  {t('glow.complete.button')}
                 </button>
               </div>
             )}
@@ -168,11 +201,12 @@ function GlowGroveGame({ onBackToMenu }: GameComponentProps) {
       </main>
 
       <footer className="game-footer">
-        <p className="game-footer__note">A small game for a slower evening.</p>
+        <p className="game-footer__note">{t('glow.footer.note')}</p>
         <p className="game-footer__keys">
-          <kbd>Tab</kbd> to focus
+          <kbd>Tab</kbd> {t('glow.footer.focus')}
           <span aria-hidden="true">·</span>
-          <kbd>Enter</kbd> or <kbd>Space</kbd> to catch
+          <kbd>Enter</kbd> {t('glow.footer.or')} <kbd>Space</kbd>{' '}
+          {t('glow.footer.catch')}
         </p>
       </footer>
     </div>

@@ -21,6 +21,8 @@ import {
 } from './breakout/engine'
 import { drawBreakoutScene } from './breakout/render'
 import type { GameComponentProps } from './gameTypes'
+import LanguageSwitcher from './LanguageSwitcher'
+import { useLanguage } from './useLanguage'
 import './App.css'
 import './BreakoutGame.css'
 
@@ -41,6 +43,7 @@ function getHud(model: BreakoutModel): BreakoutHud {
 }
 
 function BreakoutGame({ onBackToMenu }: GameComponentProps) {
+  const { t } = useLanguage()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const modelRef = useRef(createBreakoutModel())
   const keysRef = useRef({ left: false, right: false })
@@ -193,13 +196,17 @@ function BreakoutGame({ onBackToMenu }: GameComponentProps) {
 
   const statusMessage =
     phase === 'won'
-      ? `You cleared every brick with a score of ${hud.score}.`
+      ? t('breakout.status.won', { score: hud.score })
       : phase === 'lost'
-        ? `Game over. Final score: ${hud.score}.`
+        ? t('breakout.status.lost', { score: hud.score })
         : phase === 'paused'
-          ? 'Breakout paused.'
+          ? t('breakout.status.paused')
           : phase === 'playing'
-            ? `Score ${hud.score}. ${hud.bricks} bricks remain. ${hud.lives} lives left.`
+            ? t('breakout.status.playing', {
+                score: hud.score,
+                bricks: hud.bricks,
+                lives: hud.lives,
+              })
             : ''
 
   return (
@@ -209,51 +216,57 @@ function BreakoutGame({ onBackToMenu }: GameComponentProps) {
           <span className="wordmark__spark" aria-hidden="true" />
           <span className="wordmark__name">Moonlit Breakout</span>
         </div>
-        <button
-          aria-label="Back to game menu"
-          className="topline__back"
-          onClick={onBackToMenu}
-          type="button"
-        >
-          <span className="topline__back-arrow" aria-hidden="true">
-            ←
-          </span>
-          All games
-        </button>
+        <div className="topline__actions">
+          <LanguageSwitcher />
+          <button
+            aria-label={t('breakout.back')}
+            className="topline__back"
+            onClick={onBackToMenu}
+            type="button"
+          >
+            <span className="topline__back-arrow" aria-hidden="true">
+              ←
+            </span>
+            {t('breakout.back')}
+          </button>
+        </div>
       </header>
 
       <main className="game-page" aria-labelledby="breakout-title">
         <header className="intro breakout-intro">
           <p className="intro__eyebrow">
             <span className="intro__asterisk" aria-hidden="true" />
-            A tiny moonlit arcade
+            {t('breakout.intro.eyebrow')}
           </p>
           <h1 id="breakout-title">
             Moonlit <span>Breakout</span>
           </h1>
-          <p className="intro__copy">
-            Keep the glow moving and clear the night sky.
-          </p>
+          <p className="intro__copy">{t('breakout.intro.copy')}</p>
         </header>
 
         <div className="breakout-layout">
-          <aside className="breakout-score-card" aria-label="Breakout score">
+          <aside
+            className="breakout-score-card"
+            aria-label={t('breakout.score.aria')}
+          >
             <div className="score-card__top">
-              <p className="score-card__kicker">Tonight&apos;s arcade</p>
+              <p className="score-card__kicker">
+                {t('breakout.score.kicker')}
+              </p>
               <span className="score-card__moon" aria-hidden="true" />
             </div>
             <div className="breakout-score">
-              <p>Score</p>
+              <p>{t('breakout.score.label')}</p>
               <strong>{hud.score}</strong>
-              <span>points</span>
+              <span>{t('breakout.score.points')}</span>
             </div>
             <div className="breakout-metrics">
               <div>
-                <span>Bricks left</span>
+                <span>{t('breakout.bricks')}</span>
                 <strong>{hud.bricks}</strong>
               </div>
               <div>
-                <span>Lives</span>
+                <span>{t('breakout.lives')}</span>
                 <strong>{hud.lives}</strong>
               </div>
             </div>
@@ -263,16 +276,19 @@ function BreakoutGame({ onBackToMenu }: GameComponentProps) {
                 onClick={() => setPhase('paused')}
                 type="button"
               >
-                Pause game
+                {t('breakout.pause')}
               </button>
             )}
           </aside>
 
           <div className="breakout-main">
-            <section className="breakout-stage" aria-label="Breakout playfield">
+            <section
+              className="breakout-stage"
+              aria-label={t('breakout.scene.aria')}
+            >
               <canvas
                 aria-describedby="breakout-instructions"
-                aria-label="Breakout playfield. Focus here, then use the left and right arrow keys or A and D to move the paddle. Pointer and touch steering are also supported."
+                aria-label={t('breakout.canvas.aria')}
                 className="breakout-board"
                 height={BREAKOUT_HEIGHT}
                 onBlur={clearKeys}
@@ -285,7 +301,7 @@ function BreakoutGame({ onBackToMenu }: GameComponentProps) {
                 tabIndex={0}
                 width={BREAKOUT_WIDTH}
               >
-                Breakout playfield
+                {t('breakout.scene.aria')}
               </canvas>
 
               {phase !== 'playing' && (
@@ -293,59 +309,65 @@ function BreakoutGame({ onBackToMenu }: GameComponentProps) {
                   <div className="state-card breakout-state-card">
                     {phase === 'ready' && (
                       <>
-                        <p className="state-card__eyebrow">Ready for a bounce?</p>
-                        <h2>Clear the night sky</h2>
-                        <p>
-                          Break every glowing brick and keep the ball in play.
+                        <p className="state-card__eyebrow">
+                          {t('breakout.ready.kicker')}
                         </p>
+                        <h2>{t('breakout.ready.title')}</h2>
+                        <p>{t('breakout.ready.body')}</p>
                         <button
                           className="primary-action"
                           onClick={startRound}
                           type="button"
                         >
-                          Start breakout
+                          {t('breakout.ready.button')}
                         </button>
                       </>
                     )}
                     {phase === 'paused' && (
                       <>
-                        <p className="state-card__eyebrow">Take a moonlit pause</p>
-                        <h2>Game paused</h2>
-                        <p>Your score and lives are right where you left them.</p>
+                        <p className="state-card__eyebrow">
+                          {t('breakout.paused.kicker')}
+                        </p>
+                        <h2>{t('breakout.paused.title')}</h2>
+                        <p>{t('breakout.paused.body')}</p>
                         <button
                           className="primary-action"
                           onClick={resumeRound}
                           type="button"
                         >
-                          Resume game
+                          {t('breakout.paused.button')}
                         </button>
                       </>
                     )}
                     {phase === 'won' && (
                       <>
-                        <p className="state-card__eyebrow">All clear</p>
-                        <h2>The sky is yours</h2>
-                        <p>You swept every brick from the moonlit sky.</p>
+                        <p className="state-card__eyebrow">
+                          {t('breakout.won.kicker')}
+                        </p>
+                        <h2>{t('breakout.won.title')}</h2>
+                        <p>{t('breakout.won.body')}</p>
                         <button
                           className="primary-action"
                           onClick={resetRound}
                           type="button"
                         >
-                          Play again
+                          {t('breakout.won.button')}
                         </button>
                       </>
                     )}
                     {phase === 'lost' && (
                       <>
-                        <p className="state-card__eyebrow">The night goes on</p>
-                        <h2>Out of lives</h2>
-                        <p>Take a breath and give the bricks another try.</p>
+                        <p className="state-card__eyebrow">
+                          {t('breakout.lost.kicker')}
+                        </p>
+                        <h2>{t('breakout.lost.title')}</h2>
+                        <p>{t('breakout.lost.body')}</p>
                         <button
                           className="primary-action"
                           onClick={resetRound}
                           type="button"
                         >
-                          Try again
+                          {t('breakout.lost.button')}
                         </button>
                       </>
                     )}
@@ -355,8 +377,7 @@ function BreakoutGame({ onBackToMenu }: GameComponentProps) {
             </section>
 
             <p className="breakout-instructions" id="breakout-instructions">
-              Focus the playfield: use ← → or A / D to move. Space or P pauses.
-              Pointer and touch move the paddle.
+              {t('breakout.instructions')}
             </p>
           </div>
         </div>
@@ -367,14 +388,15 @@ function BreakoutGame({ onBackToMenu }: GameComponentProps) {
       </main>
 
       <footer className="game-footer">
-        <p className="game-footer__note">One ball. Five rows. Three lives.</p>
+        <p className="game-footer__note">{t('breakout.footer.note')}</p>
         <p className="game-footer__keys">
           <kbd>←</kbd>
           <kbd>→</kbd>
-          <span>move</span>
+          <span>{t('breakout.footer.move')}</span>
           <span aria-hidden="true">·</span>
           <kbd>Space</kbd>
-          <span>pause</span>
+          <kbd>P</kbd>
+          <span>{t('breakout.footer.pause')}</span>
         </p>
       </footer>
     </div>

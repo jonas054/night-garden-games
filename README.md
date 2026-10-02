@@ -4,6 +4,9 @@ A small, local-only collection of cozy games. Choose between **Glow Grove**, a
 firefly-catching game in a moonlit meadow, and **Moonlit Breakout**, a paddle
 game with five rows of glowing bricks.
 
+The interface is Swedish by default. Use the 🇸🇪, 🇬🇧, and 🇨🇳 flag buttons to
+switch to Swedish, British English, or Simplified Chinese.
+
 ## Run locally
 
 Vite 8 requires Node.js `^20.19.0` or `>=22.12.0`.

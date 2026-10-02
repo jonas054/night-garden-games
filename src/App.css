@@ -9,6 +9,7 @@
 
 .topline,
 .wordmark,
+.topline__actions,
 .game-footer,
 .game-footer__keys {
   display: flex;
@@ -20,6 +21,10 @@
   min-height: 38px;
   padding-bottom: 15px;
   border-bottom: 1px solid var(--color-line);
+}
+
+.topline__actions {
+  gap: 13px;
 }
 
 .wordmark {
@@ -709,6 +714,10 @@
     padding-bottom: 12px;
   }
 
+  .topline__actions {
+    gap: 9px;
+  }
+
   .topline__tag {
     font-size: 0.56rem;
     letter-spacing: 0.1em;
@@ -841,6 +850,18 @@
   .firefly {
     width: 70px;
     height: 70px;
+  }
+}
+
+@media (max-width: 600px) {
+  .topline {
+    flex-wrap: wrap;
+    row-gap: 10px;
+  }
+
+  .topline__actions {
+    width: 100%;
+    justify-content: space-between;
   }
 }
 

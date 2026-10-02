@@ -1,6 +1,15 @@
 import type { ComponentType } from 'react'
+import type { TranslationKey } from './i18n'
 
 export type GameArtwork = 'meadow' | 'breakout'
+
+export interface GameCopyKeys {
+  title: TranslationKey
+  category: TranslationKey
+  tagline: TranslationKey
+  description: TranslationKey
+  details: TranslationKey
+}
 
 export interface GameComponentProps {
   onBackToMenu: () => void
@@ -9,10 +18,6 @@ export interface GameComponentProps {
 export interface GameCatalogEntry {
   id: string
   artwork: GameArtwork
-  title: string
-  category: string
-  tagline: string
-  description: string
-  details: string
+  copy: GameCopyKeys
   component: ComponentType<GameComponentProps>
 }

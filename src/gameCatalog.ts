@@ -6,22 +6,25 @@ export const GAME_CATALOG: readonly GameCatalogEntry[] = [
   {
     id: 'glow-grove',
     artwork: 'meadow',
-    title: 'Glow Grove',
-    category: 'Moonlit meadow',
-    tagline: 'Catch a little light.',
-    description: 'Follow five fireflies across a softly glowing meadow.',
-    details: '5 fireflies · No timer',
+    copy: {
+      title: 'catalog.glow.title',
+      category: 'catalog.glow.category',
+      tagline: 'catalog.glow.tagline',
+      description: 'catalog.glow.description',
+      details: 'catalog.glow.details',
+    },
     component: GlowGroveGame,
   },
   {
     id: 'moonlit-breakout',
     artwork: 'breakout',
-    title: 'Moonlit Breakout',
-    category: 'Moonlit arcade',
-    tagline: 'A glow, a paddle, one more bounce.',
-    description:
-      'Bounce a moonlit ball through five rows of glowing bricks.',
-    details: '40 bricks · 3 lives',
+    copy: {
+      title: 'catalog.breakout.title',
+      category: 'catalog.breakout.category',
+      tagline: 'catalog.breakout.tagline',
+      description: 'catalog.breakout.description',
+      details: 'catalog.breakout.details',
+    },
     component: BreakoutGame,
   },
 ]

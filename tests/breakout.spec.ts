@@ -15,6 +15,7 @@ import {
 } from '../src/breakout/engine.ts'
 
 async function selectBreakout(page: Page) {
+  await page.getByRole('button', { name: 'English (United Kingdom)' }).click()
   await page.getByRole('button', { name: 'Play Moonlit Breakout' }).click()
   await expect(
     page.getByRole('heading', { name: 'Moonlit Breakout', exact: true }),
@@ -75,6 +76,7 @@ test('resets the ball after a miss and ends the game when lives run out', () => 
 
 test('starts, pauses, resumes, and returns to the menu', async ({ page }) => {
   await page.goto('/')
+  await page.getByRole('button', { name: 'English (United Kingdom)' }).click()
   await expect(
     page.getByRole('heading', { name: 'Choose a game' }),
   ).toBeVisible()
@@ -102,7 +104,7 @@ test('starts, pauses, resumes, and returns to the menu', async ({ page }) => {
   await page.getByRole('button', { name: 'Pause game' }).click()
   await page.getByRole('button', { name: 'Resume game' }).click()
   await expect(page.getByRole('button', { name: 'Pause game' })).toBeVisible()
-  await page.getByRole('button', { name: 'Back to game menu' }).click()
+  await page.getByRole('button', { name: 'All games' }).click()
 
   await expect(
     page.getByRole('heading', { name: 'Choose a game' }),
@@ -122,6 +124,7 @@ test('fits and accepts touch steering on a narrow screen', async ({ browser }) =
   try {
     const page = await context.newPage()
     await page.goto('/')
+    await page.getByRole('button', { name: 'English (United Kingdom)' }).click()
     await page.getByRole('button', { name: 'Play Moonlit Breakout' }).tap()
 
     const canvas = page.locator('canvas.breakout-board')
