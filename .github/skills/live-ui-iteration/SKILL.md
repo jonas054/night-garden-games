@@ -33,7 +33,7 @@ Use the running application as feedback while making UI changes. Keep implementa
 2. Make a coherent UI change, allow HMR to update the page, then inspect a fresh snapshot. Reload only if HMR did not apply or the page is stale.
 3. Exercise the changed interaction in the browser, inspect relevant console errors, and fix issues before moving on. Use current snapshot references after navigation or reload.
 4. Check desktop and narrow viewport behavior when the change affects responsive layout. Run the repository's relevant tests or checks as well; browser inspection does not replace them.
-5. Report only what was actually verified. Leave a preview server and browser session started for this task available to the user, give its URL, and explain how to stop it. Never close or terminate resources that were already running.
+5. Report only what was actually verified. Before ending the task, close the browser session and stop every preview or service process started by this skill, including any child processes, using the managed terminal's stop control. Confirm they have exited. Never close or terminate resources that were already running before this task.
 
 ## Stop and ask the user
 
